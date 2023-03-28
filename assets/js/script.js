@@ -3,6 +3,7 @@ var searchedCities = [];
 var storage = localStorage.getItem('cities');
 var lastSearched = "";
 var lsStorage = localStorage.getItem('lastSearched');
+var time = 14;
 
 if (storage) {
     searchedCities = JSON.parse(storage);
@@ -23,26 +24,33 @@ function searchWeather(city) {
 function searchWeatherDaily(city, days) {
     // Build URL for the API
     // api.openweathermap.org/data/2.5/forecast?q={city name}&cnt={days}&appid={API key}
-    var api = "https://api.openweathermap.org/data/2.5/forecast?q="+city+"&cnt="+days+"&units=metric&appid="+apiKey
+    var api = "https://api.openweathermap.org/data/2.5/forecast?q="+city+/*"&cnt="+days+*/"&units=metric&appid="+apiKey
     $.get(api, function(data, status){
-        displayDailyWeatherData(data);
+        displayDailyWeatherData(data, days);
     });
 }
 
-function displayDailyWeatherData(data) {
+function displayDailyWeatherData(data, limit) {
     $('#FiveDayForcase > *').remove();
     var list = data.list;
+    var ammount = 0;
+
+    // Filter data
     var row = $('<div class="row"></div>')
     for (let index = 0; index < list.length; index++) {
-        var col = $('<div class="col"></div>')
-        var day = $('<div class="daily-weather"></div>')
-        var date = $('<p>'+dayjs.unix(list[index].dt).format('hh:mm - DD/MM/YYYY')+'</p>')
-        var temp = $('<p>Temp: '+list[index].main.temp+'&#8451;</p>')
-        var wind = $('<p>Wind: '+list[index].wind.speed+'</p>')
-        var humidity = $('<p>Humidity: '+list[index].main.humidity+'%</p>')
-        day.append(date, temp, wind, humidity)
-        col.append(day)
-        row.append(col)
+        if (dayjs.unix(list[index].dt).format('HH') == time && ammount < limit) {
+            var col = $('<div class="col"></div>')
+            var icon = $('<img src="https://openweathermap.org/img/wn/'+list[index].weather[0].icon+'@2x.png" alt="'+list[index].weather[0].main+'">')
+            var day = $('<div class="daily-weather p-3"></div>')
+            var date = $('<p>'+dayjs.unix(list[index].dt).format('DD/MM/YYYY')+'</p>')
+            var temp = $('<p>Temp: '+list[index].main.temp+'&#8451;</p>')
+            var wind = $('<p>Wind: '+list[index].wind.speed+'</p>')
+            var humidity = $('<p>Humidity: '+list[index].main.humidity+'%</p>')
+            day.append(date, icon, temp, wind, humidity)
+            col.append(day)
+            row.append(col)
+            ammount++;
+        }        
     }
     $('#FiveDayForcase').append(row);
     console.log(data);
@@ -84,6 +92,10 @@ function previousSearches() {
 $(document).ready(function(){
     $('#search').on('click', function(){
         var city = $('#city-search').val().toLowerCase();
+        // Dont do anything if the search is empty
+        if (city === ""){
+            return
+        }
         localStorage.setItem('lastSearched', city);
         // Clear Value
         $('#city-search').val("");
@@ -96,6 +108,12 @@ $(document).ready(function(){
         }
         // Update Previous Searches
         previousSearches();
+    })
+
+    $('#time-search').on('change', function(){
+        time = $(this).val();
+        searchWeather(lastSearched);
+        searchWeatherDaily(lastSearched, 5);
     })
 
     $(document).on('click', '.searched-city', function(){

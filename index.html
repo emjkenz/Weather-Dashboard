@@ -17,7 +17,20 @@
         <div class="row">
             <div class="col-3">
                 <h2>Search for a City</h2>
-                <input type="text" class="form-control" id="city-search" placeholder="e.g. Melbourne">
+                <div class="d-flex">
+                    <input type="text" class="form-control w-50" id="city-search" placeholder="e.g. Melbourne">
+                    <select class="form-control w-50" name="time" id="time-search">
+                        <option value="02">2:00 AM</option>
+                        <option value="05">5:00 AM</option>
+                        <option value="08">8:00 AM</option>
+                        <option value="11">11:00 AM</option>
+                        <option value="14" selected>2:00 PM</option>
+                        <option value="17">5:00 PM</option>
+                        <option value="20">8:00 PM</option>
+                        <option value="23">11:00 PM</option>
+                    </select>
+                </div>
+                
                 <button id="search" type="submit" class="btn btn-primary w-100 my-2">Search</button>
                 <hr>
                 <div id="previous-searches"></div>
