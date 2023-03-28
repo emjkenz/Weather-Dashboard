@@ -20,4 +20,4 @@ THEN I am again presented with current and future conditions for that city
 ## Mock Up
 The following image shows the web application's appearance and functionality:
 
-![weather example](images/weather%20example.png)
+![weather example](https://github.com/emjkenz/Weather-Dashboard/raw/main/Images/weather%20example.png)
