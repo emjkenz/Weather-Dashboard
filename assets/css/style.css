@@ -10,3 +10,8 @@ header {
 .searched-city{
     text-transform: capitalize;
 }
+
+.daily-weather {
+    background: rgb(38, 58, 133);
+    color: #fff;
+}
