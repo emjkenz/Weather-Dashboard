@@ -4,7 +4,6 @@ var searchedCities = [];
 var storage = localStorage.getItem('cities');
 var lastSearched = "";
 var lsStorage = localStorage.getItem('lastSearched');
-var time = 14;
 var city = "";
 
 // Get a list of past searches
@@ -52,16 +51,14 @@ function displayDailyWeatherData(data, limit) {
     // to the page and the date of the listed weather
     var list = data.list;
     var ammount = 0;
-    var listTime = 0;
+    var lastDay = 0;
 
     // Filter data
     var row = $('<div class="row"></div>')
     for (let index = 0; index < list.length; index++) {
-        listTime = dayjs.unix(list[index].dt).format('HH')
 
-        // If you can't get the time exactly then look for a time greater or less
-        // than than the selected time to guarentee the ammount of days specified
-        if (( listTime == time || listTime > time || listTime < time) && ammount < limit) {
+        // Check to make sure you're not listing the same day or greater than the limit
+        if (dayjs.unix(list[index].dt).format('DD') !== lastDay && ammount < limit) {
 
             // Create the elements to display the weather
             var col = $('<div class="col"></div>')
@@ -79,7 +76,10 @@ function displayDailyWeatherData(data, limit) {
 
             // Incriment the ammount to stop at the limit
             ammount++;
-        }        
+        }
+
+        // Update last day with currently listed day
+        lastDay = dayjs.unix(list[index].dt).format('DD');
     }
     // Add to the page
     $('#FiveDayForcase').append(row);
@@ -163,20 +163,6 @@ $(document).ready(function(){
 
         // Update Previous Searches
         previousSearches();
-    })
-
-    // Listen for when the dropdown changes
-    $('#time-search').on('change', function(){
-
-        // Update the time
-        time = $(this).val();
-
-        // If there is a city that was already searched then update the weather
-        // using the latest time
-        if (lastSearched) {
-            searchWeather(lastSearched);
-            searchWeatherDaily(lastSearched, 5);
-        }
     })
 
     // Listen for previous searches click
