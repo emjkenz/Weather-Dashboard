@@ -4,6 +4,7 @@ var storage = localStorage.getItem('cities');
 var lastSearched = "";
 var lsStorage = localStorage.getItem('lastSearched');
 var time = 14;
+var city = "";
 
 if (storage) {
     searchedCities = JSON.parse(storage);
@@ -34,11 +35,13 @@ function displayDailyWeatherData(data, limit) {
     $('#FiveDayForcase > *').remove();
     var list = data.list;
     var ammount = 0;
+    var listTime = 0;
 
     // Filter data
     var row = $('<div class="row"></div>')
     for (let index = 0; index < list.length; index++) {
-        if (dayjs.unix(list[index].dt).format('HH') == time && ammount < limit) {
+        listTime = dayjs.unix(list[index].dt).format('HH')
+        if (( listTime == time || listTime == time-3 || listTime == time+3) && ammount < limit) {
             var col = $('<div class="col"></div>')
             var icon = $('<img src="https://openweathermap.org/img/wn/'+list[index].weather[0].icon+'@2x.png" alt="'+list[index].weather[0].main+'">')
             var day = $('<div class="daily-weather p-3"></div>')
@@ -53,7 +56,6 @@ function displayDailyWeatherData(data, limit) {
         }        
     }
     $('#FiveDayForcase').append(row);
-    console.log(data);
 }
 
 function displayWeatherData(data){
@@ -91,7 +93,7 @@ function previousSearches() {
 
 $(document).ready(function(){
     $('#search').on('click', function(){
-        var city = $('#city-search').val().toLowerCase();
+        city = $('#city-search').val().toLowerCase();
         // Dont do anything if the search is empty
         if (city === ""){
             return
@@ -112,8 +114,10 @@ $(document).ready(function(){
 
     $('#time-search').on('change', function(){
         time = $(this).val();
-        searchWeather(lastSearched);
-        searchWeatherDaily(lastSearched, 5);
+        if (lastSearched) {
+            searchWeather(lastSearched);
+            searchWeatherDaily(lastSearched, 5);
+        }
     })
 
     $(document).on('click', '.searched-city', function(){
@@ -136,7 +140,6 @@ $(document).ready(function(){
 
     previousSearches();
     if (lastSearched) {
-        console.log(lastSearched);
         searchWeather(lastSearched);
         searchWeatherDaily(lastSearched, 5);
     }
