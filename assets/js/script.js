@@ -94,13 +94,14 @@ function displayWeatherData(data){
     // Create the elements to display the weather
     var row = $('<div class="row"></div>')
     var col = $('<div class="col"></div>')
-    var title = $('<h2>'+data.name+'</h2>')
+    var title = $('<h2>'+data.name+' - '+dayjs.unix(data.dt).format("DD/MM/YYYY")+'</h2>')
+    var icon = $('<img class="weather-icon" src="https://openweathermap.org/img/wn/'+data.weather[0].icon+'@2x.png" alt="'+data.weather[0].main+'">')
     var temp = $('<p>Temperature: '+data.main.temp+'&#8451;</p>')
     var wind = $('<p>Wind Speed: '+data.wind.speed+' meter/sec</p>')
     var humidity = $('<p>Humidity: '+data.main.humidity+'%</p>')
 
     // Add the elements to eachother
-    col.append(title, temp, wind, humidity)
+    col.append(title, icon, temp, wind, humidity)
     row.append(col)
 
     // Add to the page
