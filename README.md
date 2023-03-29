@@ -1,6 +1,8 @@
 # Weather-Dashboard
 Using a third party API to fetch weather data
 
+Use the weather dashboard [here](https://emjkenz.github.io/Weather-Dashboard/)
+
 ## User Story
 AS A traveler
 I WANT to see the weather outlook for multiple cities
